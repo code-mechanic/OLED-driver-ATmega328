@@ -440,23 +440,41 @@ void oled_char(uint8_t ch, uint8_t seg, uint8_t pag)
    }
 }
 
-void oled_num(uint16_t Num, uint8_t seg, uint8_t pag)
+void oled_num(float Num, uint8_t seg, uint8_t pag)
 {
-  uint8_t buffer[3] = {0,0,0};// MAX digit to store
+  float fnum;
+  uint8_t buffer[5] = {0,0,0,0,0};// MAX digit to store
   uint8_t rem,buflen=0,i=0;
-  uint16_t quo;
-  do
+  uint16_t quo, fnum2int[2];// INDEX : 0 -> Integer , 1 -> Fraction
+  
+  fnum2int[0] = Num;
+  fnum = (Num - fnum2int[0]) * 100;
+  fnum2int[1] = fnum;
+  for(int index = 1;index >= 0;index--) // loop for segregate each digit in integer and fraction
   {
-    quo = Num / 10;
-    rem = Num % 10;
-    Num = quo;
-    buffer[buflen] = rem;
-    buflen++;
-  }while(Num);
-  for(uint8_t numlen = 3;numlen>0;numlen--)//numlen = MAX digit to dispaly
+    for(char fix_dig = 2;fix_dig > 0;fix_dig--)/*this loop runs 2 time because
+  * both integer and fraction have 2 digit and if fix_dig increases integer and 
+  * fractional digit increases linearly.Suppose integer part and fractional part
+  * digit length is varying try 2 loops for integer part and fractional part.*/ 
+    {
+      quo = fnum2int[index] / 10;
+      rem = fnum2int[index] % 10;
+      fnum2int[index] = quo;
+      buffer[buflen] = rem;
+      buflen++;
+    }
+  }
+  for(uint8_t numlen = 5;numlen>0;numlen--)//numlen = MAX digit to dispaly
   {
-    oled_char((buffer[i]+0x30), (seg+((numlen-1)*width)), pag);
-    i++;
+    if(numlen != 3) // position 3 for (.)
+    {
+      oled_char((buffer[i]+0x30), (seg+((numlen-1)*width)), pag);
+      i++;
+    }
+    else
+    {
+      oled_char('.',(seg+((numlen-1)*width)), pag);
+    }
   }
 }
 /*This function is used to print the string*/
