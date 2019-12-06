@@ -443,10 +443,14 @@ void oled_char(uint8_t ch, uint8_t seg, uint8_t pag)
 void oled_num(float Num, uint8_t seg, uint8_t pag)
 {
   float fnum;
-  uint8_t buffer[5] = {0,0,0,0,0};// MAX digit to store
-  uint8_t rem,buflen=0,i=0;
+  uint8_t buffer[5] = {0,0,0,0};// MAX digit(Number and dot ONLY) to store
+  uint8_t rem,buflen=0,i=0,negnum=0;
   uint16_t quo, fnum2int[2];// INDEX : 0 -> Integer , 1 -> Fraction
-  
+  if(Num < 0)
+  {
+    Num = -Num;
+    negnum = 1;
+  }
   fnum2int[0] = Num;
   fnum = (Num - fnum2int[0]) * 100;
   fnum2int[1] = fnum;
@@ -464,14 +468,20 @@ void oled_num(float Num, uint8_t seg, uint8_t pag)
       buflen++;
     }
   }
-  for(uint8_t numlen = 5;numlen>0;numlen--)//numlen = MAX digit to dispaly
+  for(uint8_t numlen = 6;numlen>0;numlen--)/*numlen = MAX digit(Number , dot , 
+                                            * and -ve sign) to dispaly
+                                            *Eg : -45.87*/
   {
-    if(numlen != 3) // position 3 for (.)
+    if((numlen != 4) && (numlen != 1)) // pos 4 for (.) and pos 1 for -ve sign 
     {
       oled_char((buffer[i]+0x30), (seg+((numlen-1)*width)), pag);
       i++;
     }
-    else
+    if(numlen == 1 && negnum ==1 )
+    {
+      oled_char('-',seg, pag);
+    }
+    if(numlen == 4)
     {
       oled_char('.',(seg+((numlen-1)*width)), pag);
     }
