@@ -1,0 +1,22 @@
+#ifndef F_CPU
+#define F_CPU 16000000UL // 16 MHz clock speed
+#endif
+#include <avr/io.h>
+#include<util/delay.h>
+#include"stdint.h"
+#include"oledssd1306.h"
+#include"font.h"
+
+int main() 
+{
+  unsigned int i = 0;
+  oledssd1306_init();
+  oled_setfont(Segment_25x40,25,40,46,58);
+  oled_fill(BLACK);
+  while(1)
+  {
+    oled_num(i,0,3);
+    i++;
+    _delay_ms(1);
+  }
+}

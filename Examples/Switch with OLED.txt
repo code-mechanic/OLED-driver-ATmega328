@@ -1,0 +1,34 @@
+#ifndef F_CPU
+#define F_CPU 16000000UL // 16 MHz clock speed
+#endif
+#include <avr/io.h>
+#include<util/delay.h>
+#include"stdint.h"
+#include"oledssd1306.h"
+#include"font.h"
+
+#define setbit(reg,bit) (reg|=(1<<bit))
+#define clearbit(reg,bit) (reg&=(~(1<<bit)))
+#define isbitHIGH(reg,bit) ((reg&(1<<bit)) == 1)
+#define isbitLOW(reg,bit) ((reg&(1<<bit)) == 0)
+
+int main() 
+{
+  unsigned int i = 0;
+  oledssd1306_init();
+  oled_fill(BLACK);
+  //oled_setfont(Font_6x8,6,8,32,128);
+  //oled_string("SWITCH",0,0);
+  oled_setfont(Segment_25x40,25,40,46,58);
+  clearbit(DDRC,DDC0);
+  setbit(PORTC,PORTC0);
+  while(1)
+  {
+    if(isbitHIGH(PINC,PINC0))
+    {
+      while(isbitHIGH(PINC,PINC0));
+      i++;
+      oled_num(i,0,3);
+    }
+  }
+}

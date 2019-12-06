@@ -1,0 +1,28 @@
+/*This function is used to print ASCII character*/
+void oled_char(uint8_t c, uint8_t seg, uint8_t pag)
+{
+  uint8_t i=0, j=0;
+  uint8_t x_seg, y_pag, byte;
+  x_seg = seg;
+  y_pag = pag;
+  font = font2;
+  j = c - min;
+  j = j * (width * height);
+  for(i = 0; i < j; i++){font++;}
+  for(i = 0; i < width; i++)
+  {
+    y_pag = pag;
+    for(j = 0; j < height; j++)
+    {
+      if(x_seg < 128)
+      {
+        oled_setpointer(x_seg, y_pag);
+        byte = pgm_read_byte(font);
+        oled_data(byte);
+      }
+      y_pag++;
+      font++;
+    }
+    x_seg++;
+   }
+}
