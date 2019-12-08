@@ -67,7 +67,7 @@ void oled_data(uint8_t data);
 void oled_setpointer(uint8_t seg, uint8_t pag);
 void oled_fill(uint8_t color);
 void oled_char(uint8_t c, uint8_t seg, uint8_t pag);
-void oled_num(uint16_t Num, uint8_t seg, uint8_t pag);
+void oled_num(float Num, uint8_t seg, uint8_t pag);
 void oled_string(char *buffer, uint8_t seg, uint8_t pag);
 void oled_setfont(const uint8_t *_font, uint8_t _width, uint8_t _height, uint8_t _min, uint8_t _max);
 #ifdef	__cplusplus
